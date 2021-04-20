@@ -1,0 +1,97 @@
+.tts-container {
+  margin: auto;
+  padding: 32px;
+  padding-top: 10%;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  max-width: 1120px;
+}
+
+.tts-table {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tts-table table{
+  border-collapse: collapse;
+  border-spacing: 0;
+  max-width: 100%;
+}
+
+.tts-table table tr {
+  max-width: 100%;
+}
+
+.tts-table table td {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #cdcdcd;
+  padding: 0;
+  margin: 0;
+  background-color: #23AB96;
+  position: relative;
+}
+
+.tts-table table td input {
+  width: 100%;
+  height: 100%;
+  padding: 0em;
+  border: none;
+  text-align: center;
+  font-size: 3em;
+  color: #666;
+}
+
+.tts-table table td input:focus {
+  outline: unset;
+}
+
+.tts-table table td span {
+  position: absolute;
+  font-size: 8;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.tts-table table td input.cell-orientation-across.active,  input.cell-orientation-down.active {
+  background-color: #B2E1D9;
+}
+
+.tts-questions {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  width: 50%;
+}
+
+.tts-questions .across, .down {
+  text-align: left;
+  max-width: 300px;
+  flex: 1;
+  width: 50%;
+}
+
+.tts-questions .across p, .down p {
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .tts-container {
+    flex-direction: column-reverse;
+  }
+
+  .tts-questions {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 728px) {
+  .tts-table table td {
+    max-width: 50px;
+    max-height: 50px;
+  }
+}
