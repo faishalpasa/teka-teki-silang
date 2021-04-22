@@ -56,8 +56,12 @@
   z-index: 2;
 }
 
-.tts-table table td input.cell-orientation-across.active,  input.cell-orientation-down.active {
+.tts-table table td input.active {
   background-color: #B2E1D9;
+}
+.tts-table table td input.answered {
+  background-color: #B2E1D9;
+  color: #23AB96;
 }
 
 .tts-questions {
@@ -65,13 +69,12 @@
   display: flex;
   gap: 16px;
   width: 50%;
+  flex-direction: column;
 }
 
 .tts-questions .across, .down {
   text-align: left;
-  max-width: 300px;
   flex: 1;
-  width: 50%;
 }
 
 .tts-questions .across p, .down p {

@@ -11,17 +11,17 @@ function getDataFromEntry(entries, coordinate) {
     data.coord = collections[0].coord
     data.word = collections[0].word
     data.position = {
-      ...collections[0].position && { firstPosition: collections[0].position },
-      ...collections[1]?.position && { secondPosition: collections[1].position },
+      ...collections[0].position && { firstPosition: `${collections[0].position}-${`${collections[0].orientation}`}` },
+      ...collections[1]?.position && { secondPosition: `${collections[1].position}-${`${collections[1].orientation}`}` },
     }
     data.length = {
       ...collections[0].length && { firstLegth: collections[0].length },
       ...collections[1]?.length && { secondLength: collections[1].length },
     }
-    data.orientation = {
-      ...collections[0].orientation && { firstOrientation: collections[0].orientation },
-      ...collections[1]?.orientation && { secondOrientation: collections[1].orientation },
-    }
+    // data.orientation = {
+    //   ...collections[0].orientation && { firstOrientation: collections[0].orientation },
+    //   ...collections[1]?.orientation && { secondOrientation: collections[1].orientation },
+    // }
   }
   return data
 } 
@@ -33,26 +33,27 @@ function TD({
   hasInput,
   hasNumber,
   number,
+  onChange,
   onClick,
   onClickOutside,
   row
 }) {
-  let classNameOrientation = ''
-  if (data.orientation?.secondOrientation) {
-    classNameOrientation = `cell-orientation-${data.orientation.firstOrientation} cell-orientation-${data.orientation.secondOrientation}`
-  } else if (data.orientation?.firstOrientation) {
-    classNameOrientation = `cell-orientation-${data.orientation.firstOrientation}`
-  }
+  // let classNameOrientation = ''
+  // if (data.orientation?.secondOrientation) {
+  //   classNameOrientation = `cell-orientation-${data.orientation.firstOrientation} cell-orientation-${data.orientation.secondOrientation}`
+  // } else if (data.orientation?.firstOrientation) {
+  //   classNameOrientation = `cell-orientation-${data.orientation.firstOrientation}`
+  // }
 
   let classNamePosition = ''
   if (data.position?.secondPosition) {
-    classNamePosition = `cell-position-${data.position.firstPosition}-${data.orientation.firstOrientation} cell-position-${data.position.secondPosition}-${data.orientation.secondOrientation}`
+    classNamePosition = `cell-position-${data.position.firstPosition} cell-position-${data.position.secondPosition}`
   } else if (data.position?.firstPosition) {
-    classNamePosition = `cell-position-${data.position.firstPosition}-${data.orientation.firstOrientation}`
+    classNamePosition = `cell-position-${data.position.firstPosition}`
   }
   
   const cellRef = React.useRef(null)
-  const className = `${classNameOrientation} ${classNamePosition} cell-row-${row} cell-col-${col}`
+  const className = `${classNamePosition} cell-row-${row} cell-col-${col}`
   useOutsideClick(cellRef, () => onClickOutside(className))
 
   function onKeyUp(e) {
@@ -81,8 +82,9 @@ function TD({
           maxLength={1}
           onKeyUp={onKeyUp}
           onClick={onClick}
-          data-first-orientation={data.orientation.firstOrientation}
-          data-second-orientation={data.orientation.secondOrientation}
+          onChange={onChange}
+          data-first-position={data.position.firstPosition}
+          data-second-position={data.position.secondPosition}
           data-col={col}
           data-row={row}
         />
@@ -98,6 +100,7 @@ function TTSView({
   cellOrientation,
   convertedEntries,
   firstValues,
+  onChangeCell,
   onClickCell,
   onClickOutsideCell,
   onClickClue,
@@ -113,7 +116,7 @@ function TTSView({
             <p
               key={data.position}
               onClick={onClickClue}
-              data-target-class={`cell-orientation-${data.orientation} cell-position-${data.position}`}
+              data-target-class={`cell-position-${data.position}-${data.orientation}`}
               data-orientation={data.orientation}
             >
               {`${data.position}. ${data.clue}`}
@@ -126,7 +129,7 @@ function TTSView({
             <p
               key={data.position}
               onClick={onClickClue}
-              data-target-class={`cell-orientation-${data.orientation} cell-position-${data.position}`}
+              data-target-class={`cell-position-${data.position}-${data.orientation}`}
               data-orientation={data.orientation}
             >
               {`${data.position}. ${data.clue}`}
@@ -158,6 +161,7 @@ function TTSView({
                       number={number}
                       onClick={onClickCell}
                       onClickOutside={onClickOutsideCell}
+                      onChange={onChangeCell}
                       row={row+1}
                     />
                   )}

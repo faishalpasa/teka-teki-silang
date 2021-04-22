@@ -20,7 +20,7 @@ function calcCoords(list) {
         orientation: data.orientation
       }
     }
-    index[`${data.position} - ${data.orientation}`] = coords
+    index[`${data.position}-${data.orientation}`] = coords
     return index
   }, {})
 
@@ -54,6 +54,11 @@ function TTSContainer() {
   const [totalCols, setTotalCols] = React.useState(0)
   const [entries, setEntries] = React.useState({})
   const [cellOrientation, setCellOrientation] = React.useState('')
+  const [answerAttempt, setAnswerAttempt] = React.useState({
+    position: '',
+    words: [],
+  })
+  const [activeCellClass, setActiveCellClass] = React.useState('')
 
   React.useEffect(() => {
     const data = calcCoords(puzzleData)
@@ -64,8 +69,8 @@ function TTSContainer() {
 
   const firstValues = Object.keys(entries).map(entry => {
     return {
-      position: entry.split(' - ')[0],
-      orientation: entry.split(' - ')[1],
+      position: entry.split('-')[0],
+      orientation: entry.split('-')[1],
       coord: entries[entry][0].coord,
       word: entries[entry][0].word,
     }
@@ -74,16 +79,22 @@ function TTSContainer() {
   const convertedEntries = Object.keys(entries).map(entry => entries[entry]).flat(2)
 
   function onClickCell(e) {
-    const orientation = e.target.dataset.firstOrientation
-    const { className } = e.target
-    e.target.select()
-    setCellOrientation(orientation)
-    const filteredClass = handleFilteredClass(className, orientation)
+    if (e.target.dataset.answered !== 'true') {
+      setAnswerAttempt({
+        position: e.target.dataset.firstPosition,
+        words: [answerAttempt.words?.[0]]
+      })
+      const orientation = e.target.dataset.firstPosition.split('-')[1]
+      const { className } = e.target
+      e.target.select()
+      setCellOrientation(orientation)
+      const filteredClass = handleFilteredClass(className, orientation)
+      setActiveCellClass(filteredClass)
 
-    console.log(filteredClass)
-    const activeCells = document.getElementsByClassName(filteredClass)
-    for(let i = 0; i < activeCells.length; i += 1) {
-      activeCells[i].classList.add('active')
+      const activeCells = document.getElementsByClassName(filteredClass)
+      for(let i = 0; i < activeCells.length; i += 1) {
+        activeCells[i].classList.add('active')
+      }
     }
   }
 
@@ -93,7 +104,7 @@ function TTSContainer() {
     for(let i = 0; i < activeCells.length; i += 1) {
       activeCells[i].classList.add('active')
     }
-    activeCells[0].focus()
+    activeCells[0].select()
     setCellOrientation(e.target.dataset.orientation)
   }
 
@@ -104,6 +115,33 @@ function TTSContainer() {
     }
   }
 
+  function onChangeCell(e) {
+    const { col, row } = e.target.dataset
+    const index = answerAttempt.position.split('-')[1] === 'across' ? (+col - 1) : (+row - 1) 
+    const newAttemptWords = answerAttempt.words.slice()
+    newAttemptWords.splice(index, 1, e.target.value)
+    setAnswerAttempt({
+      ...answerAttempt,
+      words: newAttemptWords
+    })
+  }
+
+  React.useEffect(() => {
+    if(answerAttempt) {
+      const attempt = answerAttempt.words.join('')
+      const answer = entries[answerAttempt.position]?.map(entry => entry.word).join('')
+      if (attempt === answer) {
+        const answeredCells = document.getElementsByClassName(activeCellClass)
+        for(let i = 0; i < answeredCells.length; i += 1) {
+          answeredCells[i].classList.remove('active')
+          answeredCells[i].classList.add('answered')
+          answeredCells[i].setAttribute('disabled', true)
+          answeredCells[i].setAttribute('data-answered', 'true')
+        }
+      }
+    }
+  }, [answerAttempt, entries, activeCellClass])
+
   const props = {
     cellOrientation,
     convertedEntries,
@@ -111,6 +149,7 @@ function TTSContainer() {
     onClickCell,
     onClickClue,
     onClickOutsideCell,
+    onChangeCell,
     totalCols,
     totalRows
   }
