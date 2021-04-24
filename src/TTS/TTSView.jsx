@@ -38,13 +38,6 @@ function TD({
   onClickOutside,
   row
 }) {
-  // let classNameOrientation = ''
-  // if (data.orientation?.secondOrientation) {
-  //   classNameOrientation = `cell-orientation-${data.orientation.firstOrientation} cell-orientation-${data.orientation.secondOrientation}`
-  // } else if (data.orientation?.firstOrientation) {
-  //   classNameOrientation = `cell-orientation-${data.orientation.firstOrientation}`
-  // }
-
   let classNamePosition = ''
   if (data.position?.secondPosition) {
     classNamePosition = `cell-position-${data.position.firstPosition} cell-position-${data.position.secondPosition}`
@@ -69,6 +62,7 @@ function TD({
       : `${dataset.col},${+dataset.row + 1}`
       document.getElementById(nextId)?.select()
     }
+    onChange(e)
   }
 
   return(
@@ -82,7 +76,6 @@ function TD({
           maxLength={1}
           onKeyUp={onKeyUp}
           onClick={onClick}
-          onChange={onChange}
           data-first-position={data.position.firstPosition}
           data-second-position={data.position.secondPosition}
           data-col={col}
@@ -97,6 +90,7 @@ function TD({
 }
 
 function TTSView({
+  activePosition,
   cellOrientation,
   convertedEntries,
   firstValues,
@@ -118,6 +112,8 @@ function TTSView({
               onClick={onClickClue}
               data-target-class={`cell-position-${data.position}-${data.orientation}`}
               data-orientation={data.orientation}
+              data-position={`${data.position}-${data.orientation}`}
+              className={activePosition === `${data.position}-${data.orientation}` ? 'active' : ''}
             >
               {`${data.position}. ${data.clue}`}
             </p>
@@ -131,6 +127,8 @@ function TTSView({
               onClick={onClickClue}
               data-target-class={`cell-position-${data.position}-${data.orientation}`}
               data-orientation={data.orientation}
+              data-position={`${data.position}-${data.orientation}`}
+              className={activePosition === `${data.position}-${data.orientation}` ? 'active' : ''}
             >
               {`${data.position}. ${data.clue}`}
             </p>

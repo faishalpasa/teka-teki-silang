@@ -1,7 +1,6 @@
 .tts-container {
   margin: auto;
   padding: 32px;
-  padding-top: 10%;
   display: flex;
   justify-content: center;
   gap: 32px;
@@ -50,7 +49,7 @@
 
 .tts-table table td span {
   position: absolute;
-  font-size: 8;
+  font-size: 16px;
   top: 0;
   left: 0;
   z-index: 2;
@@ -81,6 +80,11 @@
   cursor: pointer;
 }
 
+.tts-questions .across p.active, .down p.active {
+  background-color: #23AB96;
+  color: #FFF;
+}
+
 @media (max-width: 1024px) {
   .tts-container {
     flex-direction: column-reverse;
@@ -93,8 +97,11 @@
 }
 
 @media (max-width: 728px) {
-  .tts-table table td {
-    max-width: 50px;
-    max-height: 50px;
+  .tts-table table td input {
+    height: calc((100vw - 64px) / 15);
+  }
+
+  .tts-table table td span {
+    font-size: 8px;
   }
 }

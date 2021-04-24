@@ -82,7 +82,7 @@ function TTSContainer() {
     if (e.target.dataset.answered !== 'true') {
       setAnswerAttempt({
         position: e.target.dataset.firstPosition,
-        words: [answerAttempt.words?.[0]]
+        words: []
       })
       const orientation = e.target.dataset.firstPosition.split('-')[1]
       const { className } = e.target
@@ -99,13 +99,24 @@ function TTSContainer() {
   }
 
   function onClickClue(e) {
-    const { targetClass } = e.target.dataset
-    const activeCells = document.getElementsByClassName(targetClass)
-    for(let i = 0; i < activeCells.length; i += 1) {
-      activeCells[i].classList.add('active')
+    if (e.target.dataset.answered !== 'true') {
+      setAnswerAttempt({
+        position: e.target.dataset.position,
+        words: []
+      })
+      const { targetClass, position } = e.target.dataset
+      const orientation = position.split('-')[1]
+      const filteredClass = handleFilteredClass(targetClass, orientation)
+      setActiveCellClass(filteredClass)
+
+      const activeCells = document.getElementsByClassName(targetClass)
+      for(let i = 0; i < activeCells.length; i += 1) {
+        activeCells[i].classList.add('active')
+      }
+
+      activeCells[0].select()
+      setCellOrientation(e.target.dataset.orientation)
     }
-    activeCells[0].select()
-    setCellOrientation(e.target.dataset.orientation)
   }
 
   function onClickOutsideCell(className) {
@@ -135,7 +146,7 @@ function TTSContainer() {
         for(let i = 0; i < answeredCells.length; i += 1) {
           answeredCells[i].classList.remove('active')
           answeredCells[i].classList.add('answered')
-          answeredCells[i].setAttribute('disabled', true)
+          answeredCells[i].setAttribute('readonly', true)
           answeredCells[i].setAttribute('data-answered', 'true')
         }
       }
@@ -143,6 +154,7 @@ function TTSContainer() {
   }, [answerAttempt, entries, activeCellClass])
 
   const props = {
+    activePosition: answerAttempt.position,
     cellOrientation,
     convertedEntries,
     firstValues,
@@ -151,7 +163,7 @@ function TTSContainer() {
     onClickOutsideCell,
     onChangeCell,
     totalCols,
-    totalRows
+    totalRows,
   }
   return (
     <TTSView {...props} />
