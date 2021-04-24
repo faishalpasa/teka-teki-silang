@@ -1,7 +1,11 @@
 import React from 'react'
 
 import { puzzleData } from '../constants/puzzleData'
+import useWindowSize from '../hooks/useWindowSize'
 import TTSView from './TTSView'
+
+const DESKTOP_BREAKPOINT = 1024
+const TABLET_BREAKPOINT = 768
 
 function calcCoords(list) {
   const entries = list.reduce((index, data) => {
@@ -50,6 +54,7 @@ function handleFilteredClass(className, orientation) {
 }
 
 function TTSContainer() {
+  const { width } = useWindowSize()
   const [totalRows, setTotalRows] = React.useState(0)
   const [totalCols, setTotalCols] = React.useState(0)
   const [entries, setEntries] = React.useState({})
@@ -153,9 +158,26 @@ function TTSContainer() {
     }
   }, [answerAttempt, entries, activeCellClass])
 
+  let margin = 64
+  let maxWidth = '100vw'
+  if (width < TABLET_BREAKPOINT) {
+    console.log('mobile')
+    margin = 64
+  } else if (width >= TABLET_BREAKPOINT && width <= DESKTOP_BREAKPOINT) {
+    console.log('tablet')
+    margin = 64 * 3
+  } else {
+    console.log('desktop')
+    maxWidth = '1440px'
+    margin = totalRows * 50
+  }
+
+  const cellHeight = `calc((${maxWidth} - ${margin}px) / ${totalRows})`
+
   const props = {
     activePosition: answerAttempt.position,
     cellOrientation,
+    cellHeight,
     convertedEntries,
     firstValues,
     onClickCell,

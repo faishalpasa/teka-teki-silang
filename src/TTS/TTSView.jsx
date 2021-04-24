@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { puzzleData } from '../constants/puzzleData'
-import useOutsideClick from '../hooks/useOutsideClick'
+import Cell from './Cell'
 import './TTS.css'
 
 function getDataFromEntry(entries, coordinate) {
@@ -18,80 +18,14 @@ function getDataFromEntry(entries, coordinate) {
       ...collections[0].length && { firstLegth: collections[0].length },
       ...collections[1]?.length && { secondLength: collections[1].length },
     }
-    // data.orientation = {
-    //   ...collections[0].orientation && { firstOrientation: collections[0].orientation },
-    //   ...collections[1]?.orientation && { secondOrientation: collections[1].orientation },
-    // }
   }
   return data
-} 
-
-function TD({
-  cellOrientation,
-  col,
-  data,
-  hasInput,
-  hasNumber,
-  number,
-  onChange,
-  onClick,
-  onClickOutside,
-  row
-}) {
-  let classNamePosition = ''
-  if (data.position?.secondPosition) {
-    classNamePosition = `cell-position-${data.position.firstPosition} cell-position-${data.position.secondPosition}`
-  } else if (data.position?.firstPosition) {
-    classNamePosition = `cell-position-${data.position.firstPosition}`
-  }
-  
-  const cellRef = React.useRef(null)
-  const className = `${classNamePosition} cell-row-${row} cell-col-${col}`
-  useOutsideClick(cellRef, () => onClickOutside(className))
-
-  function onKeyUp(e) {
-    const { dataset } = e.target
-    if (e.key === "Delete" || e.key === "Backspace") {
-      const prevId = cellOrientation === 'across'
-      ? `${+dataset.col - 1},${dataset.row}`
-      : `${dataset.col},${+dataset.row - 1}`
-      document.getElementById(prevId)?.select()
-    } else if (e.key !== '') {
-      const nextId = cellOrientation === 'across'
-      ? `${+dataset.col + 1},${dataset.row}`
-      : `${dataset.col},${+dataset.row + 1}`
-      document.getElementById(nextId)?.select()
-    }
-    onChange(e)
-  }
-
-  return(
-    <td>
-      {hasInput && (
-        <input
-          autoComplete="off"
-          ref={cellRef}
-          className={className}
-          id={data.coord}
-          maxLength={1}
-          onKeyUp={onKeyUp}
-          onClick={onClick}
-          data-first-position={data.position.firstPosition}
-          data-second-position={data.position.secondPosition}
-          data-col={col}
-          data-row={row}
-        />
-      )}
-      {hasNumber && (
-        <span>{number}</span>
-      )}
-    </td>
-  )
 }
 
 function TTSView({
   activePosition,
   cellOrientation,
+  cellHeight,
   convertedEntries,
   firstValues,
   onChangeCell,
@@ -149,8 +83,9 @@ function TTSView({
                   const number = firstValues.find(firstValue => firstValue.coord === coord)?.position
 
                   return (
-                    <TD
+                    <Cell
                       cellOrientation={cellOrientation}
+                      cellHeight={cellHeight}
                       col={col+1}
                       data={data}
                       hasInput={hasInput}
@@ -161,6 +96,7 @@ function TTSView({
                       onClickOutside={onClickOutsideCell}
                       onChange={onChangeCell}
                       row={row+1}
+                      totalRows={totalRows}
                     />
                   )}
                 )}

@@ -23,9 +23,11 @@
   max-width: 100%;
 }
 
-.tts-table table td {
+.tts-table table td div {
   width: 50px;
-  height: 50px;
+}
+
+.tts-table table td {
   border: 1px solid #cdcdcd;
   padding: 0;
   margin: 0;
@@ -39,7 +41,6 @@
   padding: 0em;
   border: none;
   text-align: center;
-  font-size: 3em;
   color: #666;
 }
 
@@ -94,11 +95,15 @@
     width: 100%;
     justify-content: center;
   }
+
+  .tts-table table td div {
+    width: auto;
+  }
 }
 
 @media (max-width: 728px) {
-  .tts-table table td input {
-    height: calc((100vw - 64px) / 15);
+  .tts-table table td div {
+    width: auto;
   }
 
   .tts-table table td span {
